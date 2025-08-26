@@ -1,0 +1,9 @@
+# Not used by the CLI yet, provided for reference
+db:
+  kind: duckdb
+  path: db/retail_bench.duckdb
+paths:
+  abt_buy: data/abt_buy
+  cikm16: data/cikm16
+  esci: data/esci
+  wdc: data/wdc

@@ -1,0 +1,12 @@
+[project]
+name = "retail-bench-etl"
+version = "0.1.0"
+description = "Unified ETL for Abt-Buy, CIKM16/Diginetica, Amazon ESCI, and WDC Products into one DB"
+requires-python = ">=3.9"
+dependencies = [
+    "duckdb>=1.0.0",
+    "pandas>=2.1.0",
+    "pyarrow>=15.0.0",
+    "pyyaml>=6.0.0",
+    "tqdm>=4.66.0",
+]
