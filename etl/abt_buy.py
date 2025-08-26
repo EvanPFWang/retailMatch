@@ -5,21 +5,29 @@ from .utils import md5_id, normalize_text, parse_price_currency, to_json_text, a
 
 def load_abt_buy(con, data_dir: str):
     d = Path(data_dir)
-    abt = pd.read_csv(d / "Abt.csv")
-    buy = pd.read_csv(d / "Buy.csv")
-    mapping = pd.read_csv(d / "abt_buy_perfectMapping.csv")
 
-    # Normalize columns to lower-case
-    abt.columns = [c.strip().lower() for c in abt.columns]
-    buy.columns = [c.strip().lower() for c in buy.columns]
-    mapping.columns = [c.strip().lower() for c in mapping.columns]
+    # Read TableA.csv: no header row, three columns.
+    abt = pd.read_csv(d / "TableA.csv", sep="\t", header=None,
+                      names=["id", "name", "description"])
 
+    # Read TableB.csv: no header row, five columns.
+    buy = pd.read_csv(d / "TableB.csv", sep="\t", header=None,
+                      names=["id", "name", "description", "manufacturer", "price"])
+
+    # Read matches.csv: no header row, two columns.
+    mapping = pd.read_csv(d / "matches.csv", sep="\t", header=None,
+                          names=["tableA_id", "tableB_id"])
+
+    #Normalize column names to lowercase so that downstream code still calls r.get("name"), etc.
+    abt.columns = [c.lower() for c in abt.columns]
+    buy.columns = [c.lower() for c in buy.columns]
+    mapping.columns = [c.lower() for c in mapping.columns]
     # Items: Abt
     abt_rows = []
     for _, r in abt.iterrows():
         price, currency = parse_price_currency(r.get("price"))
         abt_rows.append(dict(
-            item_id = md5_id("abt_buy","abt", r.get("id")),
+            item_id = md5_id("abt_buy","tablea", r.get("id")),
             dataset = "abt_buy",
             dataset_item_key = f"abt:{r.get('id')}",
             merchant = "abt",
@@ -46,7 +54,7 @@ def load_abt_buy(con, data_dir: str):
     for _, r in buy.iterrows():
         price, currency = parse_price_currency(r.get("price"))
         buy_rows.append(dict(
-            item_id = md5_id("abt_buy","buy", r.get("id")),
+            item_id = md5_id("abt_buy","tableb", r.get("id")),
             dataset = "abt_buy",
             dataset_item_key = f"buy:{r.get('id')}",
             merchant = "buy",
@@ -81,8 +89,8 @@ def load_abt_buy(con, data_dir: str):
     right_ids = mapping.columns[1]
     pair_rows = []
     for _, r in mapping.iterrows():
-        left = md5_id("abt_buy","abt", r.get(left_ids))
-        right = md5_id("abt_buy","buy", r.get(right_ids))
+        left = md5_id("abt_buy","tablea", r.get(left_ids))
+        right = md5_id("abt_buy","tableb", r.get(right_ids))
         pair_rows.append(dict(
             left_item_id = left,
             right_item_id = right,
