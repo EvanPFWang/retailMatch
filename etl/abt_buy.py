@@ -6,17 +6,16 @@ from .utils import md5_id, normalize_text, parse_price_currency, to_json_text, a
 def load_abt_buy(con, data_dir: str):
     d = Path(data_dir)
 
-    # Read TableA.csv: no header row, three columns.
-    abt = pd.read_csv(d / "TableA.csv", sep="\t", header=None,
+    sep = "\t"  # or: r"\t+|\s{2,}" with engine='python' for a more forgiving parser
+    abt = pd.read_csv(d / "TableA.csv",
+                      sep=sep, header=None, dtype=str,  # engine='python' if you switch to regex
                       names=["id", "name", "description"])
-
-    # Read TableB.csv: no header row, five columns.
-    buy = pd.read_csv(d / "TableB.csv", sep="\t", header=None,
+    buy = pd.read_csv(d / "TableB.csv",
+                      sep=sep, header=None, dtype=str,  # engine='python' if you switch to regex
                       names=["id", "name", "description", "manufacturer", "price"])
-
-    # Read matches.csv: no header row, two columns.
-    mapping = pd.read_csv(d / "matches.csv", sep="\t", header=None,
-                          names=["tableA_id", "tableB_id"])
+    mapping = pd.read_csv(d / "matches.csv",
+                          sep=sep, header=None, dtype=str,  # engine='python' if you switch to regex
+                          names=["tablea_id", "tableb_id"])
 
     #Normalize column names to lowercase so that downstream code still calls r.get("name"), etc.
     abt.columns = [c.lower() for c in abt.columns]
@@ -29,9 +28,9 @@ def load_abt_buy(con, data_dir: str):
         abt_rows.append(dict(
             item_id = md5_id("abt_buy","tablea", r.get("id")),
             dataset = "abt_buy",
-            dataset_item_key = f"abt:{r.get('id')}",
-            merchant = "abt",
-            site = "abt.com",
+            dataset_item_key = f"tablea:{r.get('id')}",
+            merchant = "tablea",
+            site = "tablea.com",
             locale = None,
             brand = None,
             title = normalize_text(r.get("name")),
@@ -42,7 +41,7 @@ def load_abt_buy(con, data_dir: str):
             currency = currency,
             category = None,
             image_url = None,
-            attrs = to_json_text({k:v for k,v in r.items() if k not in ('id','name','description','price')}),
+            attrs = to_json_text({}),
             split = None,
             variant = None,
             version = None,
@@ -56,9 +55,9 @@ def load_abt_buy(con, data_dir: str):
         buy_rows.append(dict(
             item_id = md5_id("abt_buy","tableb", r.get("id")),
             dataset = "abt_buy",
-            dataset_item_key = f"buy:{r.get('id')}",
-            merchant = "buy",
-            site = "buy.com",
+            dataset_item_key = f"tableb:{r.get('id')}",
+            merchant = "tableb",
+            site = "tableb.com",
             locale = None,
             brand = r.get("manufacturer"),
             title = normalize_text(r.get("name")),
