@@ -7,10 +7,10 @@ def load_abt_buy(con, data_dir: str):
     d = Path(data_dir)
 
     sep = "\t"  # or: r"\t+|\s{2,}" with engine='python' for a more forgiving parser
-    abt = pd.read_csv(d / "TableA.csv",
+    abt = pd.read_csv(d / "tableA.csv",
                       sep=sep, header=None, dtype=str,  # engine='python' if you switch to regex
                       names=["id", "name", "description"])
-    buy = pd.read_csv(d / "TableB.csv",
+    buy = pd.read_csv(d / "tableB.csv",
                       sep=sep, header=None, dtype=str,  # engine='python' if you switch to regex
                       names=["id", "name", "description", "manufacturer", "price"])
     mapping = pd.read_csv(d / "matches.csv",

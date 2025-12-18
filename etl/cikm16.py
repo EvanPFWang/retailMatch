@@ -3,6 +3,15 @@ from pathlib import Path
 import pandas as pd
 from tqdm import tqdm
 from .utils import md5_id, normalize_text, parse_price_currency, to_json_text, append_df
+#train-purchases: carts with grouped products bought
+"""
+sessionId (serial)
+timeframe (time since the first query in a session, in milliseconds)
+eventdate (calendar date)
+ordernumber (serial product orderID; groups all products purchased together ~ shopping cart; if a user bought several products, there are several records sharing the same ordernumber)
+itemId (purchased product)"""
+
+
 
 def _load_products(con, d: Path):
     # products.csv and product-categories.csv are expected, but columns vary across mirrors.
