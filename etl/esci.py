@@ -2,6 +2,38 @@ from __future__ import annotations
 from pathlib import Path
 import pandas as pd
 from .utils import md5_id, normalize_text, to_json_text, append_df
+#_examples: query-product paired judgements
+"""example_id: Unique ID for labeled row (one query-product judgment). 
+
+
+query: The raw customer query text string. Many rows share the same query text.
+
+query_id: Unique identifier - all results/judgments for same query share ID
+Used to group “up to ~40 products per query” in the original setup. 
+
+
+product_id: points to specific Amazon catalog item (commonly treated as ASIN). 
+
+
+product_locale: Which marketplace/language bucket query-product pair belongs to (US/ES/JP). 
+part of join key to product metadata. 
+
+esci_label: (human relevance judgment for query-product pair)
+E (Exact): matches all query specs
+S (Substitute): usable alternative but misses some spec
+C (Complement): not requested item, but complements requested item
+I (Irrelevant): doesn’t satisfy the query’s core intent 
+
+
+small_version: flag (0/1) indicating the row belongs to the reduced/smaller dataset (used for Task 1 in the repo’s examples). 
+
+large_version: Flag (0/1) indicating the row belongs to the larger dataset (superset; used for Tasks 2 and 3)
+
+split: Split label (repo shows train and test) and stratified by query (all rows for a query stay together). 
+"""
+
+
+#_products: product information
 
 def load_esci(con, data_dir: str):
     d = Path(data_dir)

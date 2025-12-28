@@ -4,7 +4,6 @@ import pandas as pd
 from .utils import md5_id, normalize_text, parse_price_currency, to_json_text, append_df
 
 def _detect_offers_file(dirpath: Path) -> Path|None:
-
     for p in dirpath.glob("*.csv"):
         try:
             head = pd.read_csv(p, nrows=5)

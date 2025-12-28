@@ -3,6 +3,28 @@ from pathlib import Path
 import pandas as pd
 from tqdm import tqdm
 from .utils import md5_id, normalize_text, parse_price_currency, to_json_text, append_df
+#train-queries: each query by user @times and what items engine displays
+"""queryId (serial)
+sessionId (serial)
+userId (serial)
+tmeframe (time since the first query in a session, in milliseconds)
+duration (page dwell time, in milliseconds)
+eventdate (calendar date)
+searchstring.tokens (comma separated hashed query tokens; empty if it is a query-less case)
+categoryId (product category ID; empty if it is a query-full session)
+items (productIDs returned by the default ranking algorithm on the SERP; this IDs must be re-ranked).
+is.test (TRUE/FALSE; TRUE if it is a test query)
+regionId (geographical region of a query; serial)."""
+#train-clicks: each user click to open item limk from engine generated SERP
+#train-item_views: user VIEWEING actual item
+"""A view can happen without a “SERP click” (e.g., user opens the item page via:
+recommendation module, bookmarked/direct URL,
+category page / other navigation, “open in new tab” paths where click 
+tracking differs): click might not become a view 
+(e.g., mis-click, blocked tracking, bounce before page load, network error).
+
+
+"""
 #train-purchases: carts with grouped products bought
 """
 sessionId (serial)
@@ -10,6 +32,19 @@ timeframe (time since the first query in a session, in milliseconds)
 eventdate (calendar date)
 ordernumber (serial product orderID; groups all products purchased together ~ shopping cart; if a user bought several products, there are several records sharing the same ordernumber)
 itemId (purchased product)"""
+
+#product-categories
+
+#products
+"""productID (serial)
+
+priceLog2 (log-transformed product price)
+
+product.name.tokens (comma separated hashed product name tokens)
+
+imageName (name of the corresponding product image)
+"""
+
 
 
 
